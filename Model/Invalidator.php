@@ -8,6 +8,7 @@ use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Email\Model\BackendTemplate;
 use Magento\Store\Model\Store;
 use Magento\User\Model\ResourceModel\User as UserResource;
+use Magento\User\Model\ResourceModel\User\CollectionFactory as UserCollectionFactory;
 
 class Invalidator
 {
@@ -26,14 +27,18 @@ class Invalidator
 
     private $userResource;
 
+    private $userCollectionFactory;
+
     public function __construct(
         TransportBuilder $transportBuilder,
         ConfigInterface $config,
-        UserResource $userResource
+        UserResource $userResource,
+        UserCollectionFactory $userCollectionFactory
     ) {
         $this->transportBuilder = $transportBuilder;
         $this->config = $config;
         $this->userResource = $userResource;
+        $this->userCollectionFactory = $userCollectionFactory;
     }
 
     public function invalidate()
@@ -50,6 +55,19 @@ class Invalidator
             return true;
         }
 
+        $collection = $this->userCollectionFactory->create();
+        foreach ($collection as $user) {
+            $this->notify($user);
+        }
+
+        return true;
+    }
+
+    /**
+     * @see Magento\User\Model\Notificator::sendNotification()
+     */
+    private function notify($user)
+    {
         /**
          * @see Magento\User\Model\Notificator::sendNotification()
          */
@@ -62,15 +80,18 @@ class Invalidator
                 'area' => FrontNameResolver::AREA_CODE,
                 'store' => Store::DEFAULT_STORE_ID
             ])
-            ->setTemplateVars([])
+            ->setTemplateVars([
+                'user' => $user
+            ])
             ->setFrom(
                 $this->config->getValue('admin/emails/forgot_email_identity')
             )
-            ->addTo('test@example.com')
+            ->addTo(
+                $user->getEmail(),
+                $user->getFirstName() . ' ' . $user->getLastName()
+            )
             ->getTransport();
 
         $transport->sendMessage();
-
-        return true;
     }
 }
