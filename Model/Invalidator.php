@@ -19,6 +19,8 @@ class Invalidator
 
     const XML_PATH_EMAIL_ENABLED = 'admin/emails/sd_invalidate_admin_passwords_send_email';
 
+    const XML_PATH_EMAIL_TEMPLATE = 'admin/emails/sd_invalidate_admin_passwords_password_reset_required_template';
+
     private $transportBuilder;
 
     private $config;
@@ -73,7 +75,7 @@ class Invalidator
          */
         $transport = $this->transportBuilder
             ->setTemplateIdentifier(
-                $this->config->getValue('admin/emails/sd_invalidate_admin_passwords_password_reset_required_template')
+                $this->config->getValue(self::XML_PATH_EMAIL_TEMPLATE)
             )
             ->setTemplateModel(BackendTemplate::class)
             ->setTemplateOptions([
