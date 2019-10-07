@@ -30,7 +30,9 @@ class Invalidator
          * @see Magento\User\Model\Notificator::sendNotification()
          */
         $transport = $this->transportBuilder
-            ->setTemplateIdentifier('sd_invalidate_admin_passwords_password_reset_required')
+            ->setTemplateIdentifier(
+                $this->config->getValue('admin/emails/sd_invalidate_admin_passwords_password_reset_required_template')
+            )
             ->setTemplateModel(BackendTemplate::class)
             ->setTemplateOptions([
                 'area' => FrontNameResolver::AREA_CODE,
