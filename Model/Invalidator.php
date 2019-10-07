@@ -7,25 +7,43 @@ use Magento\Backend\App\ConfigInterface;
 use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Email\Model\BackendTemplate;
 use Magento\Store\Model\Store;
+use Magento\User\Model\ResourceModel\User as UserResource;
 
 class Invalidator
 {
+    /**
+     * No string will hash to this value.
+     */
+    const INVALIDATED_PASSWORD_STRING = '-----------------------------';
+
     private $transportBuilder;
 
     private $config;
 
     private $state;
 
+    private $userResource;
+
     public function __construct(
         TransportBuilder $transportBuilder,
-        ConfigInterface $config
+        ConfigInterface $config,
+        UserResource $userResource
     ) {
         $this->transportBuilder = $transportBuilder;
         $this->config = $config;
+        $this->userResource = $userResource;
     }
 
     public function invalidate()
     {
+        /**
+         * Invalidate all the passwords
+         */
+        $this->userResource->getConnection()->update(
+            $this->userResource->getMainTable(),
+            ['password' => self::INVALIDATED_PASSWORD_STRING]
+        );
+
         /**
          * @see Magento\User\Model\Notificator::sendNotification()
          */
