@@ -3,12 +3,14 @@
 namespace SomethingDigital\InvalidateAdminPasswords\Model;
 
 use Magento\Framework\Mail\Template\TransportBuilder;
+use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Backend\App\ConfigInterface;
 use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Email\Model\BackendTemplate;
 use Magento\Store\Model\Store;
 use Magento\User\Model\ResourceModel\User as UserResource;
 use Magento\User\Model\ResourceModel\User\CollectionFactory as UserCollectionFactory;
+use SomethingDigital\InvalidateAdminPasswords\Model\Compatibility\MSPTwoFactorAuth;
 
 class Invalidator
 {
@@ -31,16 +33,24 @@ class Invalidator
 
     private $userCollectionFactory;
 
+    private $moduleManager;
+
+    private $mspTFA;
+
     public function __construct(
         TransportBuilder $transportBuilder,
         ConfigInterface $config,
         UserResource $userResource,
-        UserCollectionFactory $userCollectionFactory
+        UserCollectionFactory $userCollectionFactory,
+        ModuleManager $moduleManager,
+        MSPTwoFactorAuth $mspTFA
     ) {
         $this->transportBuilder = $transportBuilder;
         $this->config = $config;
         $this->userResource = $userResource;
         $this->userCollectionFactory = $userCollectionFactory;
+        $this->moduleManager = $moduleManager;
+        $this->mspTFA = $mspTFA;
     }
 
     public function invalidate()
@@ -52,6 +62,10 @@ class Invalidator
             $this->userResource->getMainTable(),
             ['password' => self::INVALIDATED_PASSWORD_STRING]
         );
+
+        if ($this->moduleManager->isEnabled('MSP_TwoFactorAuth')) {
+            $this->mspTFA->execute();
+        }
 
         if (!$this->config->getValue(self::XML_PATH_EMAIL_ENABLED)) {
             return true;
