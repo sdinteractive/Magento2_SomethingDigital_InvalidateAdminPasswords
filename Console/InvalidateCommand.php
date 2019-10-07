@@ -33,6 +33,11 @@ class InvalidateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
-        echo $this->invalidator->invalidate();
+
+        $result = $this->invalidator->invalidate();
+
+        if ($result) {
+            $output->writeln('Passwords invalidated');
+        }
     }
 }

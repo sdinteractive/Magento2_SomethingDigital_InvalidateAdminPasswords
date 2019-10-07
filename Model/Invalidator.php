@@ -16,6 +16,8 @@ class Invalidator
      */
     const INVALIDATED_PASSWORD_STRING = '-----------------------------';
 
+    const XML_PATH_EMAIL_ENABLED = 'admin/emails/sd_invalidate_admin_passwords_send_email';
+
     private $transportBuilder;
 
     private $config;
@@ -44,6 +46,10 @@ class Invalidator
             ['password' => self::INVALIDATED_PASSWORD_STRING]
         );
 
+        if (!$this->config->getValue(self::XML_PATH_EMAIL_ENABLED)) {
+            return true;
+        }
+
         /**
          * @see Magento\User\Model\Notificator::sendNotification()
          */
@@ -65,6 +71,6 @@ class Invalidator
 
         $transport->sendMessage();
 
-        echo 'DONE' . PHP_EOL;
+        return true;
     }
 }
