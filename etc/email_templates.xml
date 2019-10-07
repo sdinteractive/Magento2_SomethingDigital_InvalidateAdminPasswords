@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="sd_invalidate_admin_passwords_password_reset_required" label="Password reset required" file="password_reset_required.html" type="text" module="SomethingDigital_InvalidateAdminPasswords" area="adminhtml"/>
+</config>

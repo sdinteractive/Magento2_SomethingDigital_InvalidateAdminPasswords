@@ -2,6 +2,7 @@
 
 namespace SomethingDigital\InvalidateAdminPasswords\Console;
 
+use Magento\Framework\App\State;
 use SomethingDigital\InvalidateAdminPasswords\Model\Invalidator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,11 +12,16 @@ class InvalidateCommand extends Command
 {
     private $invalidator;
 
-    public function __construct(Invalidator $invalidator)
-    {
+    private $state;
+
+    public function __construct(
+        Invalidator $invalidator,
+        State $state
+    ) {
         parent::__construct(null);
 
         $this->invalidator = $invalidator;
+        $this->state = $state;
     }
 
     protected function configure()
@@ -26,6 +32,7 @@ class InvalidateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_ADMINHTML);
         echo $this->invalidator->invalidate();
     }
 }
