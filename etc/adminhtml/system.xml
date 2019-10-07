@@ -15,6 +15,15 @@
                         <field id="sd_invalidate_admin_passwords_send_email">1</field>
                     </depends>
                 </field>
+                <field id="sd_invalidate_admin_passwords_clear_msp_tfa" translate="label" type="select" sortOrder="1200" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Clear MSP Two Factor Auth</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Require users to reset two factor auth when forcing password reset (recommended)
+                    </comment>
+                    <depends>
+                        <field id="sd_invalidate_admin_passwords_send_email">1</field>
+                    </depends>
+                </field>
             </group>
         </section>
     </system>

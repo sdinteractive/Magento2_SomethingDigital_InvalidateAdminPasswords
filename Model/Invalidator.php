@@ -23,6 +23,8 @@ class Invalidator
 
     const XML_PATH_EMAIL_TEMPLATE = 'admin/emails/sd_invalidate_admin_passwords_password_reset_required_template';
 
+    const XML_PATH_CLEAR_MSP_TFA = 'admin/emails/sd_invalidate_admin_passwords_clear_msp_tfa';
+
     private $transportBuilder;
 
     private $config;
@@ -63,7 +65,8 @@ class Invalidator
             ['password' => self::INVALIDATED_PASSWORD_STRING]
         );
 
-        if ($this->moduleManager->isEnabled('MSP_TwoFactorAuth')) {
+        if ($this->moduleManager->isEnabled('MSP_TwoFactorAuth') &&
+            $this->config->getValue(self::XML_PATH_CLEAR_MSP_TFA)) {
             $this->mspTFA->execute();
         }
 
