@@ -20,9 +20,6 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Require users to reset two factor auth when forcing password reset (recommended)
                     </comment>
-                    <depends>
-                        <field id="sd_invalidate_admin_passwords_send_email">1</field>
-                    </depends>
                 </field>
             </group>
         </section>

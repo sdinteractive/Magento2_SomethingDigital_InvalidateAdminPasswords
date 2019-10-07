@@ -38,6 +38,7 @@ Settings are available via the Magento admin panel under Stores > Configuration 
 
 - **Send Password Reset Required Email** If set to "Yes" invalidating admin user passwords will also trigger an email to each admin user informing them that their password must be reset
 - **Password Reset Required Template** The email template that will be sent to each user.
+- **Clear MSP Two Factor Auth** If set to "Yes" invalidating admin user passwords will also invalidate MSP 2FA user configuration. This is recommended as it's possible 2FA configuration may have been compromised (in addition to passwords)
 
 ### Customizing The Email Template
 
