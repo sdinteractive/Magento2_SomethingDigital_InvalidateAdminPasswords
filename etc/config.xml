@@ -3,6 +3,7 @@
     <default>
         <admin>
             <emails>
+                <sd_invalidate_admin_passwords_send_email>1</sd_invalidate_admin_passwords_send_email>
                 <sd_invalidate_admin_passwords_password_reset_required_template>admin_emails_sd_invalidate_admin_passwords_password_reset_required_template</sd_invalidate_admin_passwords_password_reset_required_template>
             </emails>
         </admin>
