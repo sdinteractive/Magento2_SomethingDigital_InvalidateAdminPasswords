@@ -25,21 +25,9 @@ class InvalidatorTest extends TestCase
 
     /**
      * @magentoDataFixture createAdminUser
-     * @magentoAdminConfigFixture admin/emails/sd_invalidate_admin_passwords_send_email 0
      */
     public function testInvalidate()
     {
-        /**
-         * todo:
-         * How can we run tests with send_email on?
-         *
-         * Struggling to figure out what to do about this:
-         * https://gist.github.com/mpchadwick/20420819780c758cfa4b4abac465ce49
-         *
-         * Once we've gotten past that error this file looks to be a good reference for testing
-         * Magento\User\Controller\Adminhtml\AuthTest::testEmailSendForgotPasswordAction()
-         * emails
-         */
         $this->invalidator->invalidate();
         $userCollection = $this->userCollectionFactory->create();
         foreach ($userCollection as $user) {
