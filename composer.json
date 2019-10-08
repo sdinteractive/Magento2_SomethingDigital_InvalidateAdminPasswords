@@ -1,0 +1,21 @@
+{
+    "name": "somethingdigital/invalidate-admin-passwords",
+    "description": "Invalidate all admin passwords",
+    "require": {
+        "php": ">=7.0 <7.3"
+    },
+    "type": "magento2-module",
+    "version": "0.1.0",
+    "license": [],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "SomethingDigital\\InvalidateAdminPasswords\\": ""
+        }
+    },
+    "require-dev": {
+        "magento-ecg/coding-standard": "^3.1"
+    }
+}

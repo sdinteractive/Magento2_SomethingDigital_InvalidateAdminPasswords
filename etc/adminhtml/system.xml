@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="admin">
+            <group id="emails">
+                <field id ="sd_invalidate_admin_passwords_send_email" translate="label" type="select" sortOrder="1000" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Send Password Reset Required Email</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sd_invalidate_admin_passwords_password_reset_required_template" translate="label" type="select" sortOrder="1100" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Password Reset Required Template</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                    <depends>
+                        <field id="sd_invalidate_admin_passwords_send_email">1</field>
+                    </depends>
+                </field>
+                <field id="sd_invalidate_admin_passwords_clear_msp_tfa" translate="label" type="select" sortOrder="1200" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Clear MSP Two Factor Auth</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Require users to reset two factor auth when forcing password reset (recommended)
+                    </comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
