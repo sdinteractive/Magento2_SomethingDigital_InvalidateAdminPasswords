@@ -14,5 +14,8 @@
         "psr-4": {
             "SomethingDigital\\InvalidateAdminPasswords\\": ""
         }
+    },
+    "require-dev": {
+        "magento-ecg/coding-standard": "^3.1"
     }
 }
