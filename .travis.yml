@@ -26,10 +26,8 @@ cache:
   directories:
     - $HOME/.composer/cache
 before_script:
-  - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
-  - composer require magento-ecg/coding-standard
   - ./.travis/before_script.sh
 script:
-  - php phpcs.phar --standard=vendor/magento-ecg/coding-standard/EcgM2 --ignore="vendor/*" --ignore="magento2/*" .
+  - phpcs --standard=vendor/magento-ecg/coding-standard/EcgM2 vendor/somethingdigital/invalidate-admin-passwords
   - phpunit -c magento2/dev/tests/$TEST_SUITE
 
