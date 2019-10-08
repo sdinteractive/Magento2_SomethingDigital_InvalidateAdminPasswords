@@ -28,6 +28,6 @@ cache:
 before_script:
   - ./.travis/before_script.sh
 script:
-  - phpcs --standard=vendor/magento-ecg/coding-standard/EcgM2 magento2/vendor/somethingdigital/invalidate-admin-passwords
+  - phpcs --standard=magento2/vendor/magento-ecg/coding-standard/EcgM2 magento2/vendor/somethingdigital/invalidate-admin-passwords
   - phpunit -c magento2/dev/tests/$TEST_SUITE
 
