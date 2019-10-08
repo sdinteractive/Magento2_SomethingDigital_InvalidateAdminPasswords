@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Mail\Template\TransportBuilderMock;
 use Magento\Framework\App\State;
+use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\User\Model\ResourceModel\User\CollectionFactory as UserCollectionFactory;
 use SomethingDigital\InvalidateAdminPasswords\Model\Invalidator;
 
@@ -15,36 +16,70 @@ class InvalidatorTest extends TestCase
 
     private $userCollectionFactory;
 
+    private $transportBuilderMock;
+
     protected function setUp()
     {
         parent::setUp();
         $objectManager = Bootstrap::getObjectManager();
-        $this->invalidator = $objectManager->create(Invalidator::class);
         $this->userCollectionFactory = $objectManager->create(UserCollectionFactory::class);
+
+        $this->transportBuilderMock = $this->createMock(TransportBuilder::class);
+
+        $this->transportBuilderMock->method('setTemplateIdentifier')
+            ->willReturn($this->transportBuilderMock);
+
+        $this->transportBuilderMock->method('setTemplateModel')
+            ->willReturn($this->transportBuilderMock);
+
+        $this->transportBuilderMock->method('setTemplateOptions')
+            ->willReturn($this->transportBuilderMock);
+
+        $this->transportBuilderMock->method('setTemplateVars')
+            ->willReturn($this->transportBuilderMock);
+
+        $this->transportBuilderMock->method('setFrom')
+            ->willReturn($this->transportBuilderMock);
+
+        $this->transportBuilderMock->method('addTo')
+            ->willReturn($this->transportBuilderMock);
+
+        $this->transportBuilderMock->method('getTransport')
+            ->willReturn(new \Magento\TestFramework\Mail\TransportInterfaceMock());
+
+        $this->invalidator = $objectManager->create(
+            Invalidator::class,
+            [
+                'transportBuilder' => $this->transportBuilderMock
+            ]
+        );
+    }
+
+    /**
+     * @magentoDataFixture createAdminUser
+     */
+    public function testInvalidate()
+    {
+        $this->transportBuilderMock->expects($this->atLeastOnce())
+            ->method('setTemplateIdentifier');
+
+        $this->invalidator->invalidate();
+        $userCollection = $this->userCollectionFactory->create();
+        foreach ($userCollection as $user) {
+            $this->assertEquals($user->getPassword(), Invalidator::INVALIDATED_PASSWORD_STRING);
+        }
     }
 
     /**
      * @magentoDataFixture createAdminUser
      * @magentoAdminConfigFixture admin/emails/sd_invalidate_admin_passwords_send_email 0
      */
-    public function testInvalidate()
+    public function testInvalidateWithSendEmailOff()
     {
-        /**
-         * todo:
-         * How can we run tests with send_email on?
-         *
-         * Struggling to figure out what to do about this:
-         * https://gist.github.com/mpchadwick/20420819780c758cfa4b4abac465ce49
-         *
-         * Once we've gotten past that error this file looks to be a good reference for testing
-         * Magento\User\Controller\Adminhtml\AuthTest::testEmailSendForgotPasswordAction()
-         * emails
-         */
+        $this->transportBuilderMock->expects($this->never())
+            ->method('setTemplateIdentifier');
+
         $this->invalidator->invalidate();
-        $userCollection = $this->userCollectionFactory->create();
-        foreach ($userCollection as $user) {
-            $this->assertEquals($user->getPassword(), Invalidator::INVALIDATED_PASSWORD_STRING);
-        }
     }
 
     public static function createAdminUser()
