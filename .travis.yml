@@ -25,5 +25,11 @@ cache:
   apt: true
   directories:
     - $HOME/.composer/cache
-before_script: ./.travis/before_script.sh
-script: phpunit -c magento2/dev/tests/$TEST_SUITE
+before_script:
+  - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+  - composer require magento-ecg/coding-standard
+  - ./.travis/before_script.sh
+script:
+  - php phpcs.phar --standard=vendor/magento-ecg/coding-standard/EcgM2 --ignore="vendor/*"
+  - phpunit -c magento2/dev/tests/$TEST_SUITE
+
