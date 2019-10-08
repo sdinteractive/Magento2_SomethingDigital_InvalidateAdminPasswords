@@ -1,5 +1,7 @@
 # Magento2_SomethingDigital_InvalidateAdminPasswords
 
+[![Build Status](https://travis-ci.org/sdinteractive/Magento2_SomethingDigital_InvalidateAdminPasswords.svg?branch=master)](https://travis-ci.org/sdinteractive/Magento2_SomethingDigital_InvalidateAdminPasswords)
+
 A tool to invalidate all Magento admin user passwords
 
 ## Why
