@@ -28,11 +28,21 @@ class InvalidatorTest extends TestCase
      */
     public function testInvalidate()
     {
+        $transportMock = Bootstrap::getObjectManager()->get(
+            TransportBuilderMock::class
+        );
         $this->invalidator->invalidate();
         $userCollection = $this->userCollectionFactory->create();
         foreach ($userCollection as $user) {
             $this->assertEquals($user->getPassword(), Invalidator::INVALIDATED_PASSWORD_STRING);
         }
+
+        $message = $transportMock->getSentMessage();
+        $this->assertNotEmpty($message);
+        $this->assertEquals(
+            __('Please reset your admin password'),
+            $message->getSubject()
+        );
     }
 
     public static function createAdminUser()
