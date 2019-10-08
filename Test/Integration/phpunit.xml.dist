@@ -18,6 +18,7 @@
         <!-- Memory tests run first to prevent influence of other tests on accuracy of memory measurements -->
         <testsuite name="Something Digital Invalidate Admin Passwords Integration Tests">
             <directory suffix="Test.php">../../../app/code/SomethingDigital/InvalidateAdminPasswords/Test/Integration</directory>
+            <directory suffix="Test.php">../../../vendor/somethingdigital/invalidate-admin-passwords/Test/Integration</directory>
         </testsuite>
     </testsuites>
     <!-- PHP INI settings and constants definition -->
