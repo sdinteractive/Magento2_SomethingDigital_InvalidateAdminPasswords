@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\Mail\Template\TransportBuilderMock;
 use Magento\Framework\App\State;
+use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\User\Model\ResourceModel\User\CollectionFactory as UserCollectionFactory;
 use SomethingDigital\InvalidateAdminPasswords\Model\Invalidator;
@@ -18,11 +19,16 @@ class InvalidatorTest extends TestCase
 
     private $transportBuilderMock;
 
+    private $moduleManager;
+
+    private $userConfigManager;
+
     protected function setUp()
     {
         parent::setUp();
         $objectManager = Bootstrap::getObjectManager();
         $this->userCollectionFactory = $objectManager->create(UserCollectionFactory::class);
+        $this->moduleManager = $objectManager->create(ModuleManager::class);
 
         $this->transportBuilderMock = $this->createMock(TransportBuilder::class);
 
@@ -80,6 +86,67 @@ class InvalidatorTest extends TestCase
             ->method('setTemplateIdentifier');
 
         $this->invalidator->invalidate();
+    }
+
+    /**
+     * @magentoDataFixture createAdminUser
+     */
+    public function testInvalidateMspInteraction()
+    {
+        if (!$this->moduleManager->isEnabled('MSP_TwoFactorAuth')) {
+            return;
+        }
+
+        $userConfigManager = Bootstrap::getObjectManager()->create('MSP\TwoFactorAuth\Api\UserConfigManagerInterface');
+        $userConfigCollection = Bootstrap::getObjectManager()
+            ->create('MSP\TwoFactorAuth\Model\ResourceModel\UserConfig\CollectionFactory')
+            ->create();
+
+        $dummyUserCollection = $this->userCollectionFactory->create();
+        $dummyUserCollection->addFieldToFilter('username', 'dummy_username');
+        $dummyUser = $dummyUserCollection->getFirstItem();
+        $configPayload = ['a' => 1, 'b' => 2];
+
+        $userConfigManager->setProviderConfig(
+            $dummyUser->getId(),
+            'test_provider',
+            $configPayload
+        );
+
+        $this->invalidator->invalidate();
+
+        $this->assertEquals(0, $userConfigCollection->getSize());
+    }
+
+    /**
+     * @magentoDataFixture createAdminUser
+     * @magentoAdminConfigFixture admin/emails/sd_invalidate_admin_passwords_clear_msp_tfa 0
+     */
+    public function testInvalidateMspInteractionWithClearMspOff()
+    {
+        if (!$this->moduleManager->isEnabled('MSP_TwoFactorAuth')) {
+            return;
+        }
+
+        $userConfigManager = Bootstrap::getObjectManager()->create('MSP\TwoFactorAuth\Api\UserConfigManagerInterface');
+        $userConfigCollection = Bootstrap::getObjectManager()
+            ->create('MSP\TwoFactorAuth\Model\ResourceModel\UserConfig\CollectionFactory')
+            ->create();
+
+        $dummyUserCollection = $this->userCollectionFactory->create();
+        $dummyUserCollection->addFieldToFilter('username', 'dummy_username');
+        $dummyUser = $dummyUserCollection->getFirstItem();
+        $configPayload = ['a' => 1, 'b' => 2];
+
+        $userConfigManager->setProviderConfig(
+            $dummyUser->getId(),
+            'test_provider',
+            $configPayload
+        );
+
+        $this->invalidator->invalidate();
+
+        $this->assertEquals(1, $userConfigCollection->getSize());
     }
 
     public static function createAdminUser()
