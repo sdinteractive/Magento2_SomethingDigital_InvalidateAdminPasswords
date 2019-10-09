@@ -15,13 +15,19 @@ class InvalidatorTest extends TestCase
 {
     private $invalidator;
 
+    private $invalidatorWithMspTFAMock;
+
     private $userCollectionFactory;
 
     private $transportBuilderMock;
 
+    private $moduleManagerMock;
+
     private $moduleManager;
 
     private $userConfigManager;
+
+    private $mspTFAMock;
 
     protected function setUp()
     {
@@ -57,6 +63,19 @@ class InvalidatorTest extends TestCase
             Invalidator::class,
             [
                 'transportBuilder' => $this->transportBuilderMock
+            ]
+        );
+
+        $this->mspTFAMock = $this->createMock(\SomethingDigital\InvalidateAdminPasswords\Model\Compatibility\MSPTwoFactorAuth::class);
+        $this->moduleManagerMock = $this->createMock(ModuleManager::class);
+        $this->moduleManagerMock->method('isEnabled')
+            ->willReturn(false);
+
+        $this->invalidatorWithMspTFAMock = $objectManager->create(
+            Invalidator::class,
+            [
+                'mspTFA' => $this->mspTFAMock,
+                'moduleManager' => $this->moduleManagerMock
             ]
         );
     }
@@ -147,6 +166,16 @@ class InvalidatorTest extends TestCase
         $this->invalidator->invalidate();
 
         $this->assertEquals(1, $userConfigCollection->getSize());
+    }
+
+    public function testInvalidateMspInteractionWithMspDisabled()
+    {
+        $status = Bootstrap::getObjectManager()->create('Magento\Framework\Module\Status');
+
+        $this->mspTFAMock->expects($this->never())
+            ->method('execute');
+
+        $this->invalidatorWithMspTFAMock->invalidate();
     }
 
     public static function createAdminUser()
