@@ -38,6 +38,7 @@ esac
 
 composer require magento-ecg/coding-standard
 composer require squizlabs/php_codesniffer
+composer require msp/twofactorauth
 
 # prepare for test suite
 case $TEST_SUITE in
