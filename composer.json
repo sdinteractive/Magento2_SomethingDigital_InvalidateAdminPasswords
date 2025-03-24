@@ -2,10 +2,10 @@
     "name": "somethingdigital/invalidate-admin-passwords",
     "description": "Invalidate all admin passwords",
     "require": {
-        "php": ">=7.0 || ~8.1.0"
+        "php": ">=7.0 || ~8.1.0 || ~8.2.0 || ~8.3.0"
     },
     "type": "magento2-module",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "license": [],
     "autoload": {
         "files": [

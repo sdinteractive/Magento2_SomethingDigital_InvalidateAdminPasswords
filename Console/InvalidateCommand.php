@@ -48,6 +48,9 @@ class InvalidateCommand extends Command
 
         if ($result) {
             $output->writeln('Passwords invalidated');
+            return \Magento\Framework\Console\Cli::RETURN_FAILURE;
         }
+
+        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }
